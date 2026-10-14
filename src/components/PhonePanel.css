@@ -1,0 +1,134 @@
+/* ====== PhonePanel 联系方式浮窗样式 ====== */
+/* 风格与 BadgePanel 一致：白底、黑字、灰标签、圆角；卡片带新拟物双向阴影 */
+
+/* 全屏半透明遮罩：点击关闭 */
+.phone-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60; /* 与 BadgePanel / ScrollStoryPanel 一致 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+/* 居中白色卡片（新拟物双向阴影） */
+.phone-card {
+  position: relative;
+  width: min(90vw, 520px);
+  box-sizing: border-box;
+  padding: 44px 44px 40px;
+  border-radius: 24px;
+  background: #ffffff;
+  color: #111111;
+  box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.08), -6px -6px 12px rgba(255, 255, 255, 0.8) #ffffff;
+}
+
+/* 右上角关闭按钮 */
+.phone-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #e5e5e5;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #555555;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.phone-close:hover {
+  border-color: #999999;
+  color: #111111;
+}
+
+/* 方阵：左右两列，左列第 i 项与右列第 i 项在同一行 */
+.phone-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+.phone-col {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+.phone-item {
+  display: flex;
+  flex-direction: column;
+}
+/* 每一项：小灰 label 在上，大黑 value 在下 */
+.phone-label {
+  margin: 0 0 8px;
+  font-size: 14px;
+  color: #999999;
+  letter-spacing: 0.05em;
+}
+.phone-value {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+  color: #111111;
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere; /* 邮箱过长时在列内换行，不撑破卡片 */
+}
+/* 右列：value + 复制按钮一行；value 多行时按钮垂直居中 */
+.phone-value-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+/* 复制按钮：BadgePanel 同款描边胶囊；已复制 = 反色黑底白字 */
+.phone-copy {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 64px; /* 固定最小宽，"复制/已复制"切换时按钮不跳宽 */
+  padding: 5px 12px;
+  border: 1px solid #dddddd;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #555555;
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+.phone-copy:hover {
+  border-color: #999999;
+  color: #111111;
+}
+.phone-copy--done {
+  border-color: #111111;
+  background: #111111;
+  color: #ffffff;
+}
+
+/* 底部 slogan：居中、稍小、深灰 */
+.phone-slogan {
+  margin: 36px 0 0;
+  text-align: center;
+  font-size: 15px;
+  letter-spacing: 0.08em;
+  color: #555555;
+}
+
+/* 小屏适配 */
+@media (max-width: 768px) {
+  .phone-card {
+    padding: 36px 24px 32px;
+  }
+  .phone-grid {
+    gap: 24px;
+  }
+  .phone-col {
+    gap: 24px;
+  }
+  .phone-value {
+    font-size: 17px;
+  }
+}

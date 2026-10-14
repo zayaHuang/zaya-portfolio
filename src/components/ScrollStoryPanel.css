@@ -1,0 +1,541 @@
+/* ====== ScrollStoryPanel 滚动叙事面板样式 ====== */
+/* 风格：新拟物 + 单色（白/灰/黑）；ellipse-gallery 屏是 3D 椭圆画廊（R3F 画布） */
+
+.scrollstory-panel {
+  position: fixed;
+  inset: 0;
+  z-index: 60; /* 与 BadgePanel / ComputerPanel 一致 */
+  overflow: hidden;
+  background: #f0f0f0;
+  color: #111111;
+}
+
+/* 返回按钮：在滚动容器外面，滚动时固定不动（新拟物圆角胶囊） */
+.scrollstory-back {
+  position: absolute;
+  top: 36px;
+  left: 48px;
+  z-index: 70; /* 盖过所有屏，包括画廊里的 DOM 标签 */
+  padding: 8px 20px;
+  border: none;
+  border-radius: 999px;
+  background: #f0f0f0;
+  color: #555555;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 6px 6px 12px #d4d4d4, -6px -6px 12px #ffffff;
+  transition: box-shadow 0.2s, color 0.2s;
+}
+.scrollstory-back:hover {
+  color: #111111;
+  box-shadow: 4px 4px 8px #d4d4d4, -4px -4px 8px #ffffff;
+}
+
+/* 滚动容器：面板里唯一滚动的元素，每个 section 都挂在这里面 */
+.scrollstory-scroll {
+  position: relative; /* ScrollTrigger transform 钉住时作为定位基准 */
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* 每一屏：占满视口高度 */
+.scrollstory-screen {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  box-sizing: border-box;
+  display: flex;
+}
+
+/* 通用小节标题（cover-flow 用，绝对定位在屏顶中间） */
+.ss-section-title {
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  font-size: 27px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: #333333;
+}
+
+/* ====== 第 1 屏：education ====== */
+.scrollstory-education {
+  align-items: center;
+  justify-content: center;
+  gap: 80px;
+  padding: 120px 96px;
+}
+.ss-edu-text {
+  max-width: 720px;
+}
+.ss-edu-label {
+  margin: 0 0 20px;
+  font-size: 16px;
+  letter-spacing: 0.2em;
+  color: #999999;
+}
+.ss-edu-main {
+  margin: 0;
+  font-size: clamp(32px, 3.5vw, 52px);
+  font-weight: 700;
+  line-height: 1.25;
+}
+.ss-edu-note {
+  margin: 28px 0 0;
+  max-width: 720px;
+  font-size: 16px;
+  line-height: 2.1;
+  color: #666666;
+  letter-spacing: 0.04em;
+}
+/* 照片：新拟物相框 */
+.ss-edu-photo {
+  flex-shrink: 0;
+  width: min(34vw, 420px);
+  padding: 14px;
+  border-radius: 28px;
+  background: #f0f0f0;
+  box-shadow: 10px 10px 20px #d4d4d4, -10px -10px 20px #ffffff;
+}
+.ss-edu-photo img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 18px;
+}
+/* 底部中间的滚动提示：向下箭头 + 文字（CSS 画箭头，不用图片） */
+.ss-edu-hint {
+  position: absolute;
+  bottom: 36px;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  color: rgba(0, 0, 0, 0.35); /* 半透明灰 */
+  pointer-events: none;
+}
+.ss-edu-hint-arrow {
+  width: 12px;
+  height: 12px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg); /* 右 + 下边框旋转 45° 拼出向下箭头 */
+}
+.ss-edu-hint-text {
+  margin: 0;
+  font-size: 13px;
+  letter-spacing: 0.2em;
+}
+
+/* ====== 第 2 屏：cover-flow ====== */
+.scrollstory-coverflow {
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  height: 100vh; 
+}
+.ss-cover-stage {
+  perspective: 1400px;   /* 3D 透视距离 */
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.ss-cover-ring {
+  position: relative;
+  width: 260px;
+  height: 380px;
+  transform-style: preserve-3d; /* 让卡片共享同一 3D 空间，随整圈转动 */
+}
+.ss-cover-card {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 300px;
+  height: 380px;
+  margin-left: -150px;   /* 卡片绕自身中心竖轴旋转 */
+  box-sizing: border-box;
+  padding: 40px 32px;
+  border-radius: 28px;
+  background: #f0f0f0;
+  box-shadow: 10px 10px 20px #d4d4d4, -10px -10px 20px #ffffff;
+  display: flex;
+  flex-direction: column;
+  backface-visibility: hidden; /* 转到背面的卡片隐藏，正面更像轮播 */
+  -webkit-font-smoothing: antialiased;    /* ← 加这两行让字体清晰 */
+  transform-style: preserve-3d;
+  outline: 1px solid transparent; 
+}
+.ss-cover-card-title {
+  margin: 0 0 18px;
+  font-size: 26px;
+  font-weight: 700;
+}
+.ss-cover-card-content {
+  margin: 0;
+  font-size: 15px;
+  line-height: 2;
+  color: #555555;
+  letter-spacing: 0.03em;
+}
+
+/* ====== 第 3 屏：ellipse-gallery（3D 椭圆画廊 + 中心视频，滚动驱动） ====== */
+.scrollstory-gallery {
+  height: 100vh; /* 钉住期间正好一屏 */
+  overflow: hidden;
+}
+/* 左侧 1/4：文字区 */
+.ss-gallery-text {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 25%;
+  min-width: 260px;
+  box-sizing: border-box;
+  padding: 100px 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+  z-index: 2;
+}
+.ss-gallery-title {
+  margin: 0;
+  font-size: 44px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #111111;
+}
+.ss-gallery-slogan {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #3a5a8c;
+}
+.ss-gallery-desc {
+  margin: 0;
+  font-size: 15px;
+  line-height: 2;
+  color: #666666;
+  letter-spacing: 0.03em;
+}
+/* 右侧 3/4：3D 画布（透视相机自带近大远小） */
+.ss-gallery-stage {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 25%;
+  background: radial-gradient(60% 60% at 55% 45%, rgba(255, 255, 255, 0.9), rgba(240, 240, 240, 0) 70%);
+}
+.ss-gallery-stage canvas {
+  display: block;
+  touch-action: pan-y; /* 触屏上也把纵向手势交给滚动容器 */
+}
+/* 中心视频下方的小标签（drei Html 渲染的 DOM） */
+.ss-gallery-video-html {
+  pointer-events: none;
+}
+.ss-gallery-video-tag {
+  margin: 0;
+  padding: 4px 14px;
+  border-radius: 999px;
+  background: rgba(240, 240, 240, 0.85);
+  color: #999999;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.06);
+}
+
+/* ====== 第 4 屏：film-strip（胶片横向滚动，钉住 + 逐张转正） ====== */
+.scrollstory-filmstrip {
+  height: 100vh; /* 钉住期间正好一屏 */
+  overflow: hidden;
+}
+/* 整屏内容包装：退场时整体上移 + 淡出（JS 直写 transform / opacity） */
+.ss-film-exit {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15vh 0 9vh;
+}
+.ss-film-head {
+  text-align: center;
+  opacity: 0; /* 初始透明，由 ScrollTrigger 首帧淡入 */
+}
+.ss-film-title {
+  margin: 0 0 14px;
+  font-size: 44px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+.ss-film-desc {
+  margin: 0;
+  font-size: 15px;
+  letter-spacing: 0.05em;
+  line-height: 2;
+  color: #666666;
+}
+/* 胶片视口：裁切 + 上下边缘渐变消失 + 3D 透视（弧形由里面的 rotateX 完成） */
+.ss-film-viewport {
+  --film-photo-w: clamp(200px, 24vw, 320px); /* 单张照片宽 */
+  --film-photo-h: calc(var(--film-photo-w) * 4 / 3);
+  --film-gap: 22px;                          /* 照片间距 */
+  position: relative;
+  width: 100%;
+  height: calc(var(--film-photo-h) + 32px);  /* 照片 + 上下两条胶片孔 */
+  overflow: hidden;
+  perspective: 1400px;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 15%, #000 85%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 15%, #000 85%, transparent);
+}
+/* 胶片长条：整条居中（margin-left 抵消半宽），JS 只写 transform */
+.ss-film-strip {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  transform: rotateX(18deg); /* 弧形（初始帧，JS 后续在同名属性上叠加 translateX） */
+}
+
+.ss-film-track {
+  position: relative;
+  flex: 1;
+}
+/* 照片框：绝对定位在胶片上，left 由 JSX 算好；滚动只整体 translateX */
+.ss-film-frame {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: var(--film-photo-w);
+}
+.ss-film-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 2px solid #ffffff;
+  background: #fafafa;
+  box-sizing: border-box;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+}
+
+/* ====== 第 5 屏：hanging-photos（照片挂在横杆上摆动，钉住） ====== */
+.scrollstory-hanging {
+  height: 100vh;
+  overflow: hidden;
+}
+.ss-hang-exit {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 13vh 6vw 0;
+}
+.ss-hang-head {
+  text-align: center;
+  opacity: 0;
+  margin-bottom: 6vh;
+}
+.ss-hang-title {
+  margin: 0 0 14px;
+  font-size: 44px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+.ss-hang-desc {
+  margin: 0;
+  font-size: 15px;
+  letter-spacing: 0.05em;
+  line-height: 2;
+  color: #666666;
+}
+/* 挂衣区：占满剩余高度，横杆贴顶 */
+.ss-hang-rack {
+  --hang-photo-w: clamp(150px, 17vw, 220px);
+  position: relative;
+  flex: 1;
+  width: 100%;
+  max-width: 1100px;
+}
+.ss-hang-rail {
+  position: absolute;
+  top: 0;
+  left: 3%;
+  right: 3%;
+  height: 8px;
+  border-radius: 999px;
+  background: #e4e4e4;
+  z-index: 1; /* 盖在挂件上方：照片从横杆后面落下 */
+  box-shadow: inset 0 -2px 3px rgba(0, 0, 0, 0.1), 4px 4px 8px #d4d4d4, -4px -4px 8px #ffffff;
+}
+/* 挂点：x 位置由 JSX 均分算好；translateX(-50%) 静态居中（JS 不碰这里的 transform） */
+.ss-hang-item {
+  position: absolute;
+  top: 0;
+  width: var(--hang-photo-w);
+  transform: translateX(-50%);
+}
+/* 绳 + 照片整体：JS 写 transform（落下 + 摆动），以顶部挂点为轴 */
+.ss-hang-assembly {
+  transform-origin: 50% 0;
+  transform: translateY(-100%); /* 初始藏在横杆后面，JS 首帧后接管 */
+}
+.ss-hang-string {
+  position: relative;
+  width: 2px;
+  height: clamp(70px, 12vh, 120px);
+  margin: 0 auto;
+  background: #b9b9b9;
+}
+.ss-hang-string::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: -4px;
+  width: 8px;
+  height: 8px;
+  border: 2px solid #a0a0a0;
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+.ss-hang-photo {
+  margin-top: 4px;
+  padding: 8px;
+  border-radius: 14px;
+  background: #f0f0f0;
+  box-shadow: 8px 8px 16px #d4d4d4, -8px -8px 16px #ffffff;
+}
+.ss-hang-photo img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* ====== 第 6 屏：end（结尾屏，钉住 + 文字淡入） ====== */
+.scrollstory-end {
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+}
+.ss-end-text {
+  text-align: center;
+  opacity: 0;               /* 初始透明，JS 首帧后接管 */
+  transform: translateY(40px);
+}
+.ss-end-title {
+  margin: 0;
+  font-size: clamp(36px, 5vw, 56px);
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: #333333;
+}
+.ss-end-line {
+  width: 72px;
+  height: 2px;
+  margin: 22px auto 0;
+  background: #cccccc;
+  transform: scaleX(0);
+  transform-origin: center;
+}
+
+/* ====== 兜底占位屏（未知 type） ====== */
+.scrollstory-placeholder {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  border-top: 1px dashed #cccccc;
+}
+.ss-placeholder-type {
+  margin: 0;
+  font-size: 14px;
+  letter-spacing: 0.25em;
+  color: #999999;
+}
+.ss-placeholder-title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 600;
+}
+.ss-placeholder-text {
+  margin: 0;
+  font-size: 18px;
+  color: #555555;
+}
+.ss-placeholder-note {
+  margin: 0;
+  font-size: 13px;
+  color: #bbbbbb;
+}
+
+/* 小屏适配 */
+@media (max-width: 768px) {
+  .scrollstory-back {
+    top: 20px;
+    left: 20px;
+  }
+  .scrollstory-education {
+    flex-direction: column;
+    gap: 48px;
+    padding: 96px 28px;
+  }
+  .ss-edu-main {
+    font-size: 34px;
+  }
+  .ss-edu-photo {
+    width: min(80vw, 360px);
+  }
+  .ss-cover-card {
+    width: 250px;
+    margin-left: -125px;
+  }
+  .ss-cover-ring {
+    width: 250px;
+  }
+  /* 小屏：画廊铺满，文字浮在底部渐隐背景上 */
+  .ss-gallery-stage {
+    left: 0;
+  }
+  .ss-gallery-text {
+    top: auto;
+    right: 0;
+    bottom: 0;
+    width: auto;
+    min-width: 0;
+    padding: 32px 24px;
+    justify-content: flex-end;
+    gap: 12px;
+    background: linear-gradient(to top, rgba(240, 240, 240, 0.95), rgba(240, 240, 240, 0));
+  }
+  .ss-gallery-title {
+    font-size: 26px;
+  }
+  .ss-film-title,
+  .ss-hang-title {
+    font-size: 30px;
+  }
+  .ss-film-viewport {
+    --film-photo-w: clamp(160px, 42vw, 220px);
+  }
+  .ss-hang-rack {
+    --hang-photo-w: clamp(130px, 36vw, 180px);
+  }
+  .ss-hang-exit {
+    padding: 12vh 5vw 0;
+  }
+}

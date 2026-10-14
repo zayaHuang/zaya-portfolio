@@ -1,0 +1,310 @@
+/* ====== BadgePanel 全屏详情页样式 ====== */
+/* 风格：白底黑字、灰色辅助文字、圆角按钮、留白充足 */
+
+.badge-panel {
+  position: fixed;
+  inset: 0;
+  z-index: 60; /* 高于 3D 场景和气泡（气泡 zIndexRange 30） */
+  display: flex;
+  flex-direction: column;
+  padding: 96px 56px 48px;
+  box-sizing: border-box;
+  overflow: hidden;
+  background: #ffffff;
+  color: #111111;
+}
+
+/* 左上角返回按钮 */
+.badge-back {
+  position: absolute;
+  top: 36px;
+  left: 48px;
+  padding: 8px 18px;
+  border: 1px solid #e5e5e5;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #555555;
+  font-size: 14px;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.badge-back:hover {
+  border-color: #999999;
+  color: #111111;
+}
+
+/* 顶部：名字信息（左） + 头像（右）；阶段 1 时整体垂直居中 */
+.badge-top {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 32px;
+}
+.badge-panel--initial .badge-top {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;   /* 整体水平居中 */
+  gap: 300px;   
+}
+
+.badge-name-block {
+  max-width: 62%;
+}
+.badge-greeting {
+  margin: 0;
+  font-size: 16px;
+  color: #999999;
+  letter-spacing: 0.08em;
+}
+.badge-name {
+  margin: 8px 0 12px;
+  font-size: 28px;
+  font-weight: 700;
+}
+.badge-meta {
+  margin: 0;
+  font-size: 14px;
+  color: #888888;
+}
+
+/* 阶段 1：名字更大、头像中等大小 */
+.badge-panel--initial .badge-greeting {
+  font-size: 38px;
+}
+.badge-panel--initial .badge-name {
+  font-size: clamp(48px, 8vw, 84px);
+  margin: 16px 0 20px;
+}
+.badge-panel--initial .badge-meta {
+  font-size: 22px;
+}
+
+/* 头像：圆形；阶段 2/3 缩小移到右上角，后跟灰色小字角色 */
+.badge-avatar-block {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.badge-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #f0f0f0;
+}
+.badge-panel--initial .badge-avatar {
+  width: 320px;
+  height: 320px;
+}
+.badge-role {
+  font-size: 14px;
+  color: #999999;
+  white-space: nowrap;
+}
+
+/* 主体（阶段 2 / 3） */
+.badge-body {
+  flex: 1;
+  overflow-y: auto;
+  margin-top: 48px;
+  position: relative; /* 提炼页关键词绝对定位的基准 */
+}
+
+/* 溶解动画的短句单元：行内元素需要 inline-block 才能应用 y 位移。
+   min-width 6em 是防“一字一换行”的关键：inline-block 是原子盒，宽度按
+   min(max(最小内容宽≈1个字, 行剩余空间), 自然宽) 收缩——当它落在行尾、
+   只剩 20~60px 碎片时，盒宽会被压到 1-3 个字，盒内文字只能竖着逐字换行。
+   给 6em 下限后，放不下就整体换到下一行，盒宽永远不会被压成竖条 */
+.badge-clause {
+  display: inline-block;
+  min-width: 1.5em; 
+}
+
+/* 正文里的 [[K:...]] 关键词：行内块才能被 layoutId 投影、缩放；
+   同样加 min-width 6em，防止落在行尾碎片时被压成逐字竖条 */
+.badge-keyword-inline {
+  display: inline-block;
+  min-width: 1.5em; 
+}
+
+/* 正文里的 [[E:...]] 佐证：灰色小字（与提炼页样式一致，交接时无跳变）；
+   同样加 min-width 6em，防止落在行尾碎片时被压成逐字竖条 */
+.badge-evidence-inline {
+  display: inline-block;
+  min-width: 1.5em; 
+}
+
+/* ====== 阶段 2：四段详情 ====== */
+
+/* 四段文字的横向容器 */
+.badge-dot { /* 黑点 */
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #111111;   /* 黑色圆点 */
+}
+
+.badge-sections {
+  display: flex;
+  flex-direction: row;        /* 横向排列，四个板块从左到右 */
+  gap: 60px;                  /* 【板块之间的间距】建议 24-48px，太大容易横向溢出 */
+  margin-top: 80px;
+  padding-bottom: 24px;       /* 【容器底部留白】防止文字贴底 */
+  overflow-x: auto;           /* 【横向滚动】内容太长时允许左右滑动 */
+}
+
+/* 每个板块（一段文字） */
+.badge-section {
+  /* 【板块宽度】底宽 400px（basis），大屏时四个板块等分剩余空间（grow: 1）；
+     永不收缩（shrink: 0）——四个板块加起来放不下时，由 .badge-sections 横向滚动，
+     不再用 min-width 和 flex: 1 互相拉扯（basis 0% + min-width 会在等分宽度
+     还没到 min-width 时直接强制溢出，宽度反而不可控） */
+    flex: 1 1 0;
+  min-width: 280px
+}
+
+/* 段落标题（如“整机项目概览”） */
+.badge-section-title {
+  display: flex;
+  align-items: center;
+  gap: 16px;                  /* 【圆点和标题文字的距离】 */
+  margin: 0 0 40px;           /* 【标题和正文之间的间距】改大→距离更远 */
+  font-size: 24px;            /* 【标题字号】18-24px 之间 */
+  font-weight: 600;           /* 【标题粗细】600 半粗，700 加粗 */
+}
+
+/* 段落正文（详细描述） */
+.badge-section-content {
+  margin: 0;
+  font-size: 17px;            /* 【正文字号】14-17px 之间 */
+  line-height: 2.2;           /* 【行间距】1.5 紧凑，2.2 松散 */
+  letter-spacing: 0.05em;     /* 【字间距】0 默认，0.05em 更松散 */
+  color: #444444;             /* 【文字颜色】#444 深灰，#111 纯黑 */
+  word-break: normal; 
+}
+/* 阶段 3：提炼页。关键词的最终位置 = 屏幕中央（绝对定位，不受正文流影响；
+   真正的“移动”由 layoutId 弹簧动画完成） */
+.badge-keypoints {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 48px;
+  padding: 24px;
+  text-align: center;
+  pointer-events: none; /* 不挡正文滚动和点击 */
+}
+.badge-keypoint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.badge-keypoint-text {
+  margin: 0;
+  font-size: clamp(24px, 3.6vw, 40px);
+  font-weight: 700;
+  line-height: 1.4;
+}
+/* 佐证竖排在关键词下方，每条佐证是独立的交接元素 */
+.badge-keypoint-evidence {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+}
+.badge-evidence {
+  font-size: 13px;
+  color: #aaaaaa; /* 更灰更小 */
+}
+
+/* 摘要文字：关键词/佐证归位完成的瞬间直接出现（无动画），屏幕上方中间 */
+.badge-summary {
+  position: absolute;
+  top: 400px;                 /* 【位置】屏幕上方中间，可调 */
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  font-size: 22px;
+  color: #333333;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  pointer-events: none;       /* 不挡任何点击 */
+}
+
+/* 右下角按钮区：位置改变变 */
+.badge-actions {
+  position: absolute;
+  left: 50%; transform: translateX(-50%);
+  bottom: 70px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.badge-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 52px;
+  padding: 0 34px;
+  border: none;
+  border-radius: 999px;
+  font-size: 16px;
+  cursor: pointer;
+}
+.badge-btn--primary {
+  background: #111111;
+  color: #ffffff;
+  transition: background 0.2s;
+}
+.badge-btn--primary:hover:not(:disabled) {
+  background: #333333;
+}
+/* 动画进行中：按钮禁用，变灰 */
+.badge-btn--primary:disabled {
+  background: #bbbbbb;
+  cursor: not-allowed;
+}
+.badge-btn--ghost {
+  background: #ffffff;
+  color: #111111;
+  border: 1px solid #dddddd;
+  text-decoration: none;
+  transition: border-color 0.2s;
+}
+.badge-btn--ghost:hover {
+  border-color: #999999;
+}
+
+/* 小屏适配 */
+@media (max-width: 768px) {
+  .badge-panel {
+    padding: 72px 24px 32px;
+  }
+  .badge-back {
+    top: 20px;
+    left: 20px;
+  }
+  .badge-panel--initial .badge-avatar {
+    width: 120px;
+    height: 120px;
+  }
+  .badge-actions {
+    right: 24px;
+    bottom: 28px;
+    gap: 12px;
+  }
+  .badge-btn {
+    height: 46px;
+    padding: 0 26px;
+    font-size: 15px;
+  }
+  .badge-summary {
+    top: 150px;
+    font-size: 18px;
+  }
+}

@@ -1,0 +1,89 @@
+/* ====== InteractiveWrapper 相关样式 ====== */
+
+/* 悬停气泡：白底黑字、圆角、底部小箭头（箭头指向物体） */
+.interactive-tooltip {
+  position: relative;
+  padding: 8px 16px;
+  border-radius: 14px;
+  background: #ffffff;
+  color: #1a1a1a;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;      /* ← 加回来：不让文字逐字换行 */
+  width: max-content;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+  user-select: none;
+  pointer-events: none;
+  text-align: center;  
+}
+
+/* 气泡主标题：现在的字体 */
+.interactive-tooltip-main {
+  font-size: 10px;
+  font-weight: 500;
+  color: #1a1a1a;
+  line-height: 1.4;
+  white-space: nowrap;   
+}
+
+/* 气泡副标题：小灰字 */
+.interactive-tooltip-hint {
+  margin-top: 4px;
+  font-size: 7px;
+  font-weight: 400;
+  color: #999999;
+  line-height: 1.4;
+  white-space: nowrap;   
+}
+
+/* 小箭头：旋转 45° 的正方形，露一半在气泡下方 */
+.interactive-tooltip::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -5px;
+  width: 10px;
+  height: 10px;
+  background: #ffffff;
+  transform: translateX(-50%) rotate(45deg);
+  border-radius: 2px;
+}
+
+/* ====== InfoPanel 占位浮层的样式（换成你的 InfoPanel 后这部分可删） ====== */
+.info-panel-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 50; /* 高于气泡的 zIndexRange（30），保证面板盖在气泡上面 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.info-panel-card {
+  position: relative;
+  min-width: 320px;
+  max-width: 640px;
+  max-height: 80vh;
+  overflow: auto;
+  padding: 28px 32px;
+  border-radius: 16px;
+  background: #fff;
+  color: #1a1a1a;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+}
+
+.info-panel-close {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  border: none;
+  background: transparent;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  color: #666;
+}
+.info-panel-close:hover {
+  color: #111;
+}
